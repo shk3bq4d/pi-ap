@@ -11,25 +11,11 @@
 # Contact:              houlahan@F1Linux.com
 # Linkedin:				www.linkedin.com/in/terrencehoulahan
 
+set -euxo pipefail
 
 # Do not edit below sources
 source "${BASH_SOURCE%/*}/variables.sh"
 source "${BASH_SOURCE%/*}/functions.sh"
-
-
-# BELOW ARE SELF-POPULATING: They require no user input or modification
-#######################################################################
-# variables below self-populate and are ONLY called in this file to supply values to directives in /etc/dnsmasq.conf
-# These live outside centralized location "variables.sh" as they require script "packages.sh" to have already executed to install dependency pkg "sipcalc"
-
-IPV4IPETH0="$(ip addr list|grep eth0|awk 'FNR==2'| awk '{print $2}')"
-IPV6IPWLAN0="$(ip -6 addr|awk '{print $2}'|grep -P '^(?!fe80)[[:alnum:]]{4}:.*/64'|cut -d '/' -f1)"
-IPV4GWWLAN0="$(ip route | grep default | grep wlan0 | awk '{print $3}')"
-
-DHCPRANGESTART="$(sipcalc $IPV4IPWLAN0 | awk 'FNR==15'|awk '{print $4}')"
-DHCPRANGEFINISH="$(sipcalc $IPV4IPWLAN0 |awk 'FNR==15'|awk '{print $6}')"
-# dhcpcd.conf default: 192.168.0.50,192.168.0.150
-DHCPRANGE="$DHCPRANGESTART,$DHCPRANGEFINISH"
 
 
 # Useful wireless-tools commands:
@@ -75,51 +61,6 @@ systemctl restart dhcpcd.service
 echo
 echo "dhcpcd Configured with SED and Enabled: /etc/dhcpcd.conf"
 echo
-
-
-
-
-######################### DHCP *SERVER* Config: "dnsmasq" #########################
-# References:
-#	https://fedoramagazine.org/using-the-networkmanagers-dnsmasq-plugin/
-#
-# Package "dnsmasq" is a DHCP *SERVER*: it assigns IP adresses to clients connecting to AP
-#
-
-### DNSMASQ Configuration:
-# Enable 'log-dhcp' if you need to troubleshoot DNS and require more granular visibility:
-#sed -i "s/#log-dhcp/log-dhcp/" /etc/dnsmasq.conf
-sed -i "s/#interface=/interface=$INTERFACEAP/" /etc/dnsmasq.conf
-sed -i "s|#dhcp-range=192.168.*,192.168.*,.*h|dhcp-range=$DHCPRANGE,$DHCPLEASETIMEHOURS\h|" /etc/dnsmasq.conf
-# Change default port dnsmasq listens on: it conflicts with systemd-resolved which grabs 5353
-sed -i "s/#port=5353/port=$DNSMASQPORT/" /etc/dnsmasq.conf
-sed -i "s/#log-queries/log-queries/" /etc/dnsmasq.conf
-
-# Below sets the nameservers WiFi clients are assigned by dnsmasq
-echo "dhcp-option=6,$(echo $IPV4IPWLAN0 |cut -d '/' -f1),$DNSRESOLVER2WIFICLIENTS" >> /etc/dnsmasq.conf
-
-
-# If dnsmasq not set to execute as a daemon then enable it by changing value from "0" to "1":
-sed -i "s/ENABLED=0/ENABLED=1/" /etc/default/dnsmasq
-
-if [[ $(systemctl list-unit-files|grep dnsmasq|awk '{print $2}') != 'enabled' ]]; then
-	systemctl enable dnsmasq
-fi
-
-if [[ $(systemctl status dnsmasq|grep active|awk '{print $2}') != 'active' ]]; then
-	systemctl start dnsmasq.service
-else
-	systemctl reload dnsmasq.service
-fi
-
-
-
-echo
-echo "DNSmasq Configured with SED and Enabled: /etc/dnsmasq.conf"
-echo
-
-
-
 
 ######################### Supplicant Config: "wpasupplicant" ########################
 # References:

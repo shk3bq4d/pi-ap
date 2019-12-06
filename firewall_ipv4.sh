@@ -9,6 +9,7 @@
 # Contact:              houlahan@F1Linux.com
 # Linkedin:				www.linkedin.com/in/terrencehoulahan
 
+set -euxo pipefail
 
 # Do not edit below sources
 source "${BASH_SOURCE%/*}/variables.sh"

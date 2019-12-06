@@ -11,7 +11,6 @@
 # Contact:              houlahan@F1Linux.com
 # Linkedin:				www.linkedin.com/in/terrencehoulahan
 
-
 USEREXECUTINGSCRIPT='pi'
 REPONAME='pi-ap'
 
@@ -24,23 +23,13 @@ OURDOMAIN='f1linux.com'
 
 # DHCP Pool will be derived from the IP and mask specified in "IPV4IPWLAN0" variable. If larger pool of addresses required use a wider mask than a /28
 # ** Ensure that this subnet specified below is not already used on your network **
-IPV4IPWLAN0='192.168.0.1/28'
+IPV4IPWLAN0='10.111.111.111/32'
 #IPV6IPWLAN0="$(ip -6 addr|awk '{print $2}'|grep -P '^(?!fe80)[[:alnum:]]{4}:.*/64'|cut -d '/' -f1)"
 
 # NOTE: Both Hyphens and underscores are valid characters for use in an SSID
 SSIDNAME='RPI-AP1'
 # Password must be min 8 characters and must NOT include single quotes- these are used as delimiters to encase the password so other special characters do not expand in bash
 APWPA2PASSWD='cH4nG3M3'
-
-# Default port systemd-resolved start on '5353' collides with dnsmasq (which does DHCP for WiFi clients) which also uses '5353' as its default port.
-# I chose 5454 but that number is arbitrary: if you have another process which listens on port 5454 feel free to change it to a different value
-DNSMASQPORT='5454'
-
-
-# Nameservers WiFi clients are assigned by dnsmasq:
-# NOTE: First resolver is the systemd-resolved stub resolver the Pi AP where names can be reolved from cached queries before reaching out to a DNS resolver on the Internet:
-DNSRESOLVER1WIFICLIENTS=$(echo $IPV4IPWLAN0 |cut -d '/' -f1)
-DNSRESOLVER2WIFICLIENTS='8.8.4.4'
 
 # DNS Resolvers Raspberry Pi Host: These are resolvers the Pi itself (not WiFi clients) will use and are specified in /etc/systemd/resolved.conf
 DNSRESOLVERIPV41='8.8.8.8'

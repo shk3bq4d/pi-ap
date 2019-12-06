@@ -15,5 +15,3 @@ apt-file
 locate
 dnsutils
 ufw
-dnsmasq-base
-dnsmasq

@@ -11,6 +11,7 @@
 # Contact:              houlahan@F1Linux.com
 # Linkedin:				www.linkedin.com/in/terrencehoulahan
 
+set -euxo pipefail
 
 # Do not edit below sources  
 source "${BASH_SOURCE%/*}/variables.sh"
@@ -187,13 +188,6 @@ echo
 
 echo
 echo
-systemctl status dnsmasq.service --no-pager 2>> $PATHLOGSCRIPTS/install.log
-echo
-echo
-
-
-echo
-echo
 systemctl status wpa_supplicant 2>> $PATHLOGSCRIPTS/install.log
 echo
 echo
@@ -205,12 +199,6 @@ echo '##########################################################################
 
 echo
 echo "$(tput setaf 4)Troubleshooting: Show Key Config Files:$(tput sgr 0)"
-echo
-
-echo "Show $(tput setaf 9)/etc/dnsmasq.conf$(tput sgr 0)"
-echo
-cat /etc/dnsmasq.conf | grep "^[^#]"
-echo
 echo
 
 echo "Show $(tput setaf 9)/etc/dhcpcd.conf$(tput sgr 0)"
