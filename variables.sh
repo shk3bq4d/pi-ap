@@ -90,5 +90,5 @@ DHCPLEASETIMEHOURS='12'
 
 # "scripts" seemed a sensible enough name for the root users scripts directory but the name is arbitrary and can be set to some other name:
 PATHSCRIPTSROOT='scripts'
-PATHSCRIPTS="/home/$(echo $USEREXECUTINGSCRIPT)/$(echo $REPONAME)"
-PATHLOGSCRIPTS="/home/$(echo $USEREXECUTINGSCRIPT)/$(echo $REPONAME)/logs"
+PATHSCRIPTS="$(eval echo ~$USEREXECUTINGSCRIPT)/$(echo $REPONAME)"
+PATHLOGSCRIPTS="$(eval echo ~$USEREXECUTINGSCRIPT)/$(echo $REPONAME)/logs"
