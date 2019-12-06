@@ -11,7 +11,7 @@
 # Contact:              houlahan@F1Linux.com
 # Linkedin:				www.linkedin.com/in/terrencehoulahan
 
-USEREXECUTINGSCRIPT='pi'
+USEREXECUTINGSCRIPT="$(whoami)"
 REPONAME='pi-ap'
 
 # Ensure all hostnames are UNIQUE:
